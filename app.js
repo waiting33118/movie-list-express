@@ -1,6 +1,7 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
 const movieList = require('./moviesData.json')
+const genresList = require('./genres.json')
 
 const app = express()
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
@@ -26,7 +27,11 @@ app.get('/movies/:movie_id', (req, res) => {
 	const movieDetail = movieList.results.find(
 		(movie) => movie.id.toString() === req.params.movie_id
 	)
-	res.render('show', { movie: movieDetail })
+	const genres = movieDetail.genres.map(
+		(item) => Object.values(genresList)[item - 1]
+	)
+
+	res.render('show', { movie: movieDetail, genres })
 })
 
 app.listen(port, hostname, () => {
